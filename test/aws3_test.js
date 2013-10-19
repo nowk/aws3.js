@@ -25,7 +25,8 @@ describe('Aws3', function() {
 
 
   it('generates a base_url using the s3Bucket', function() {
-    assert.equal(Aws3.base_url, 'https://s3.amazonaws.com/aws3_bucket');
+    var aws3 = new Aws3('large.txt', 'text/plain');
+    assert.equal(aws3.base_url(), 'https://s3.amazonaws.com/aws3_bucket');
   });
 
   it('can define these arguements', function() {
@@ -55,7 +56,7 @@ describe('Aws3', function() {
   describe('#url', function() {
     it('returns the generated url', function() {
       var aws3 = new Aws3('large.txt', 'text/plain', null, '/generated-unique-key');
-      assert.equal(aws3.url(), Aws3.base_url+'/generated-unique-key/large.txt');
+      assert.equal(aws3.url(), 'https://s3.amazonaws.com/aws3_bucket/generated-unique-key/large.txt');
     });
   });
 
@@ -70,13 +71,15 @@ describe('Aws3', function() {
     var aws3 = new Aws3('large.txt', 'text/plain', null, '/abcd/');
 
     function signature(str) {
-      return crypto.createHmac('sha1', aws3.awsSecretKey).update(str).digest('base64');
+      return crypto.createHmac('sha1', process.env.AWS_SECRET_ACCESS_KEY)
+        .update(str)
+        .digest('base64');
     }
 
     describe('#signed_get_request', function() {
       it('returns a signed get request', function() {
         var arr = ['GET', '', '', one_hour_from_now(), '/aws3_bucket/abcd/large.txt'].join('\n');
-        assert.equal(aws3.get_request(), arr);
+        assert.equal(aws3.req_string('get'), arr);
         assert.equal(aws3.signed_get_request(), 
                      aws3.url()+'?'+aws3.key_and_expires_params()+'&Signature='+signature(arr));
       });
@@ -85,7 +88,7 @@ describe('Aws3', function() {
     describe('#signed_put_request', function() {
       it('returns a signed put request', function() {
         var arr = ['PUT', '', 'text/plain', one_hour_from_now(), '/aws3_bucket/abcd/large.txt'].join('\n');
-        assert.equal(aws3.put_request(), arr);
+        assert.equal(aws3.req_string('put'), arr);
         assert.equal(aws3.signed_put_request(), 
                      aws3.url()+'?'+aws3.key_and_expires_params()+'&Signature='+signature(arr));
       });
@@ -94,7 +97,7 @@ describe('Aws3', function() {
     describe('#signed_del_request', function() {
       it('returns a signed delete request', function() {
         var arr = ['DELETE', '', '', one_hour_from_now(), '/aws3_bucket/abcd/large.txt'].join('\n');
-        assert.equal(aws3.del_request(), arr);
+        assert.equal(aws3.req_string('delete'), arr);
         assert.equal(aws3.signed_del_request(), 
                      aws3.url()+'?'+aws3.key_and_expires_params()+'&Signature='+signature(arr));
       });
