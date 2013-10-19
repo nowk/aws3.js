@@ -1,0 +1,33 @@
+{
+  "name": "aws3.js",
+  "version": "0.0.0",
+  "description": "Simple AWS S3 Generator",
+  "main": "aws3.js",
+  "dependencies": {
+    "crypto": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "assert": "*",
+    "sinon": "*"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha ./test/aws3_test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nowk/aws3.js.git"
+  },
+  "keywords": [
+    "AWS",
+    "S3"
+  ],
+  "author": "Yung Hwa Kwon <yung.kwon@damncarousel.com> (http://damncarousel.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nowk/aws3.js/issues"
+  }
+}
