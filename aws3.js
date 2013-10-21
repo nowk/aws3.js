@@ -3,21 +3,25 @@
 var crypto = require('crypto')
   ;
 
-var awsAccessKey = process.env.AWS_ACCESS_KEY_ID
-  , awsSecretKey = process.env.AWS_SECRET_ACCESS_KEY
-  , s3Bucket     = process.env.S3_BUCKET || 'aws3_bucket'
-  ;
+
+module.exports = exports = Aws3;
 
 
-var Aws3 = function(file_name, mime_type, acl, path) {
-  this.awsAccessKey = awsAccessKey;
-  this.awsSecretKey = awsSecretKey;
-  this.s3Bucket     = s3Bucket;
+Aws3.awsAccessKey = process.env.AWS_ACCESS_KEY_ID;
+Aws3.awsSecretKey = process.env.AWS_SECRET_ACCESS_KEY;
+Aws3.s3Bucket     = process.env.S3_BUCKET || 'aws3_bucket';
+
+
+function Aws3(file_name, mime_type, acl, path) {
+  this.awsAccessKey = Aws3.awsAccessKey;
+  this.awsSecretKey = Aws3.awsSecretKey;
+  this.s3Bucket     = Aws3.s3Bucket;
   this.file_name    = file_name;
   this.mime_type    = mime_type;
   this.acl          = acl || 'private';
   this.path         = path || '/';
   this.expire_in    = 3600;
+
 
   this.req_string = function(method) {
     return [
@@ -46,7 +50,7 @@ var Aws3 = function(file_name, mime_type, acl, path) {
   this.key_and_expires_params = function() {
     return 'AWSAccessKeyId='+this.awsAccessKey+'&Expires='+this.expires_in();
   };
-};
+}
 
 
 Aws3.prototype.base_url = function() {
@@ -71,19 +75,7 @@ Aws3.prototype.expires_in = function() {
   return this._expires_in;
 };
 
-
-Aws3.prototype.signed_get_request = function() {
-  return this.generate_signed_request('get');
+Aws3.prototype.signed_url = function(method) {
+  return this.generate_signed_request(method);
 };
-
-Aws3.prototype.signed_put_request = function() {
-  return this.generate_signed_request('put');
-};
-
-Aws3.prototype.signed_del_request = function() {
-  return this.generate_signed_request('delete');
-};
-
-
-module.exports = exports = Aws3;
 
