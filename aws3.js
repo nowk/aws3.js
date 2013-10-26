@@ -23,14 +23,24 @@ function Aws3(file_name, mime_type, acl, path) {
   this.expire_in    = 3600;
 
 
+  var self = this;
+
+  var amzaclheader = function() {
+    return 'x-amz-acl:'+self.acl;
+  };
+
   this.req_string = function(method) {
-    return [
+    var arr = [
         method.toUpperCase()
       , ''
       , (method==='put' ? this.mime_type : '')
       , this.expires_in()
       , this.bucket_file_path()
-    ].join('\n').toString('utf-8');
+    ];
+
+    if (method === 'put') arr.splice(4, 0, amzaclheader());
+
+    return arr.join('\n').toString('utf-8');
   };
 
   this.signature = function(method) {

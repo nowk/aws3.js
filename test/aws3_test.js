@@ -76,25 +76,21 @@ describe('Aws3', function() {
         .digest('base64');
     }
 
-    describe('#signed_get_request', function() {
+    describe('#signed_url', function() {
       it('returns a signed get request', function() {
         var arr = ['GET', '', '', one_hour_from_now(), '/aws3_bucket/abcd/large.txt'].join('\n');
         assert.equal(aws3.req_string('get'), arr);
         assert.equal(aws3.signed_url('get'), 
                      aws3.url()+'?'+aws3.key_and_expires_params()+'&Signature='+signature(arr));
       });
-    });
 
-    describe('#signed_put_request', function() {
       it('returns a signed put request', function() {
-        var arr = ['PUT', '', 'text/plain', one_hour_from_now(), '/aws3_bucket/abcd/large.txt'].join('\n');
+        var arr = ['PUT', '', 'text/plain', one_hour_from_now(), 'x-amz-acl:private', '/aws3_bucket/abcd/large.txt'].join('\n');
         assert.equal(aws3.req_string('put'), arr);
         assert.equal(aws3.signed_url('put'), 
                      aws3.url()+'?'+aws3.key_and_expires_params()+'&Signature='+signature(arr));
       });
-    });
 
-    describe('#signed_del_request', function() {
       it('returns a signed delete request', function() {
         var arr = ['DELETE', '', '', one_hour_from_now(), '/aws3_bucket/abcd/large.txt'].join('\n');
         assert.equal(aws3.req_string('delete'), arr);
