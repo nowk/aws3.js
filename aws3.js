@@ -12,11 +12,6 @@ Aws3.awsSecretKey = process.env.AWS_SECRET_ACCESS_KEY;
 Aws3.s3Bucket     = process.env.S3_BUCKET || 'aws3_bucket';
 
 function Aws3(file_name, mime_type, path, acl, expire_in) {
-  var awsAccessKey = Aws3.awsAccessKey
-    , awsSecretKey = Aws3.awsSecretKey
-    , s3Bucket     = Aws3.s3Bucket
-    ;
-
   this.file_name = file_name;
   this.mime_type = mime_type;
   this.acl       = acl || 'private';
@@ -25,11 +20,11 @@ function Aws3(file_name, mime_type, path, acl, expire_in) {
 
 
   this.s3_url = function() {
-    return 'https://s3.amazonaws.com/'+s3Bucket;
+    return 'https://s3.amazonaws.com/'+Aws3.s3Bucket;
   };
 
   this.bucket_file_path = function() {
-    return '/'+s3Bucket+'/'+this.file_path();
+    return '/'+Aws3.s3Bucket+'/'+this.file_path();
   };
 
 
@@ -63,13 +58,13 @@ function Aws3(file_name, mime_type, path, acl, expire_in) {
 
   var signature = function(method) {
     return crypto
-      .createHmac('sha1', awsSecretKey)
+      .createHmac('sha1', Aws3.awsSecretKey)
       .update(payload(method))
       .digest('base64');
   };
 
   var key_and_expires_params = function() {
-    return 'AWSAccessKeyId='+awsAccessKey+'&Expires='+self.expires_in();
+    return 'AWSAccessKeyId='+Aws3.awsAccessKey+'&Expires='+self.expires_in();
   };
 }
 
