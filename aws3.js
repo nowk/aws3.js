@@ -14,9 +14,9 @@ Aws3.s3Bucket     = process.env.S3_BUCKET || 'aws3_bucket';
 
 /*
  * var aws3      = new Aws3('file.txt', 'text/plain', 'a/unique/optional/path');
- * var getUrl    = aws3.signedUrl('get'); // Public or private s3 url
- * var putUrl    = aws3.signedUrl('put'); // Signed url for CORS put
- * var deleteUrl = aws3.signedUrl('del'); // Signed url for CORS delete
+ * var getUrl    = aws3.signedUrl('get');    // Public or private s3 url
+ * var putUrl    = aws3.signedUrl('put');    // Signed url for CORS put
+ * var deleteUrl = aws3.signedUrl('delete'); // Signed url for CORS delete
  *
  */
 
