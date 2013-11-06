@@ -33,8 +33,12 @@ function Aws3(filename, mimetype, path, acl, expirein) {
  * @api private
  */
 
-Aws3.prototype.generateSignedRequest = function(method) {
-  return [this.fileUrl(), this.keyAndExpiresParams()+'&Signature='+this.signature(method)].join('?');
+Aws3.prototype.generateSignedRequest = function(method, encoded) {
+  var signature = this.signature(method);
+  if (encoded) {
+    signature = encodeURIComponent(signature);
+  }
+  return [this.fileUrl(), this.keyAndExpiresParams()+'&Signature='+signature].join('?');
 };
 
 
@@ -133,7 +137,7 @@ Aws3.prototype.expiresIn = function() {
  * @api public
  */
 
-Aws3.prototype.signedUrl = function(method) {
-  return this.generateSignedRequest(method);
+Aws3.prototype.signedUrl = function(method, encoded) {
+  return this.generateSignedRequest(method, encoded);
 };
 
