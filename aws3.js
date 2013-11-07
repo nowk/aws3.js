@@ -26,6 +26,8 @@ function Aws3(filename, mimetype, path, acl, expirein) {
   this.acl      = acl || 'private';
   this.path     = path || '/';
   this.expirein = expirein || 3600;
+
+  this.asattachment = false; // must be explicitly set eg. aws3.asattachment = true;
 }
 
 
@@ -33,12 +35,21 @@ function Aws3(filename, mimetype, path, acl, expirein) {
  * @api private
  */
 
-Aws3.prototype.generateSignedRequest = function(method, encoded) {
-  var signature = this.signature(method);
-  if (encoded) {
-    signature = encodeURIComponent(signature);
+Aws3.prototype.attachable = function(method, delimiter) {
+  if (method === 'get' && this.asattachment) {
+    return delimiter+'response-content-disposition=attachment';
   }
-  return [this.fileUrl(), this.keyAndExpiresParams()+'&Signature='+signature].join('?');
+  return '';
+};
+
+
+/*
+ * @api private
+ */
+
+Aws3.prototype.generateSignedRequest = function(method) {
+  var signature = encodeURIComponent(this.signature(method));
+  return [this.fileUrl(), this.keyAndExpiresParams()+'&Signature='+signature+this.attachable(method, '&')].join('?');
 };
 
 
@@ -52,7 +63,7 @@ Aws3.prototype.payload = function(method) {
     , ''
     , (method==='put' ? this.mimetype : '')
     , this.expiresIn()
-    , this.bucketFilePath()
+    , this.bucketFilePath()+this.attachable(method, '?')
   ];
   if (method === 'put') arr.splice(4, 0, this.amzAclHeader());
   return arr.join('\n').toString('utf-8');
@@ -137,8 +148,7 @@ Aws3.prototype.expiresIn = function() {
  * @api public
  */
 
-Aws3.prototype.signedUrl = function(method, encoded) {
-  return this.generateSignedRequest(method, encoded);
+Aws3.prototype.signedUrl = function(method) {
+  return this.generateSignedRequest(method);
 };
-
 

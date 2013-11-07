@@ -75,9 +75,9 @@ describe('Aws3', function() {
     var aws3;
 
     function signature(str) {
-      return crypto.createHmac('sha1', process.env.AWS_SECRET_ACCESS_KEY)
+      return encodeURIComponent(crypto.createHmac('sha1', process.env.AWS_SECRET_ACCESS_KEY)
         .update(str)
-        .digest('base64');
+        .digest('base64'));
     }
 
     function url() {
@@ -99,6 +99,20 @@ describe('Aws3', function() {
       ].join('\n');
 
       assert.equal(aws3.signedUrl('get'), url()+'&Signature='+signature(arr));
+    });
+
+    it('can return a signed get request to download as an attachment', function() {
+      aws3.asattachment = true;
+
+      var arr = [
+          'GET'
+        , ''
+        , ''
+        , one_hour_from_now()
+        , '/aws3_bucket/abcd/large.txt?response-content-disposition=attachment'
+      ].join('\n');
+
+      assert.equal(aws3.signedUrl('get'), url()+'&Signature='+signature(arr)+'&response-content-disposition=attachment');
     });
 
     it('returns a signed put request', function() {
