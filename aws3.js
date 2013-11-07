@@ -109,7 +109,7 @@ Aws3.prototype.bucketFilePath = function() {
  */
 
 Aws3.prototype.filePath = function() {
-  return (this.path.replace(/\/$/, '')+'/'+this.filename).replace(/^\//, '');
+  return (this.path.replace(/\/$/, '')+'/'+encodeURIComponent(this.filename)).replace(/^\//, '');
 };
 
 
@@ -140,4 +140,5 @@ Aws3.prototype.expiresIn = function() {
 Aws3.prototype.signedUrl = function(method, encoded) {
   return this.generateSignedRequest(method, encoded);
 };
+
 
