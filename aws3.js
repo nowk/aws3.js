@@ -10,7 +10,7 @@ var crypto = require('crypto')
 Aws3.awsAccessKey = process.env.AWS_ACCESS_KEY_ID;
 Aws3.awsSecretKey = process.env.AWS_SECRET_ACCESS_KEY;
 Aws3.s3Bucket     = process.env.S3_BUCKET || 'aws3_bucket';
-Aws3.region       = process.env.AWS_REGION || 's3';
+Aws3.awsRegion    = process.env.AWS_REGION || 'us-east-1';
 
 
 /*
@@ -29,6 +29,7 @@ function Aws3(filename, mimetype, path, acl, expirein) {
   this.expirein = expirein || 3600;
 
   this.asattachment = false; // must be explicitly set eg. aws3.asattachment = true;
+  this.awsregion    = Aws3.awsRegion;
 }
 
 
@@ -102,8 +103,29 @@ Aws3.prototype.keyAndExpiresParams = function() {
  * @api private
  */
 
+Aws3.prototype.regionExtension = function() {
+  if (this.awsregion !== 'us-east-1') {
+    return '-'+this.awsregion;
+  }
+  return '';
+};
+
+
+/*
+ * @api private
+ */
+
+Aws3.prototype.subdomain = function() {
+  return 's3'+this.regionExtension();
+};
+
+
+/*
+ * @api private
+ */
+
 Aws3.prototype.s3Url = function() {
-  return 'https://'+Aws3.region+'.amazonaws.com/'+Aws3.s3Bucket;
+  return 'https://'+this.subdomain()+'.amazonaws.com/'+Aws3.s3Bucket;
 };
 
 
