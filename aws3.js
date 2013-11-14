@@ -10,6 +10,7 @@ var crypto = require('crypto')
 Aws3.awsAccessKey = process.env.AWS_ACCESS_KEY_ID;
 Aws3.awsSecretKey = process.env.AWS_SECRET_ACCESS_KEY;
 Aws3.s3Bucket     = process.env.S3_BUCKET || 'aws3_bucket';
+Aws3.region       = process.env.AWS_REGION || 's3';
 
 
 /*
@@ -102,7 +103,7 @@ Aws3.prototype.keyAndExpiresParams = function() {
  */
 
 Aws3.prototype.s3Url = function() {
-  return 'https://s3.amazonaws.com/'+Aws3.s3Bucket;
+  return 'https://'+Aws3.region+'.amazonaws.com/'+Aws3.s3Bucket;
 };
 
 
