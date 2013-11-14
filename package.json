@@ -1,6 +1,6 @@
 {
   "name": "aws3.js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Simple AWS S3 Generator",
   "main": "aws3.js",
   "dependencies": {
