@@ -29,7 +29,6 @@ function Aws3(filename, mimetype, path, acl, expirein) {
   this.expirein = expirein || 3600;
 
   this.asattachment = false; // must be explicitly set eg. aws3.asattachment = true;
-  this.awsregion    = Aws3.awsRegion;
 }
 
 
@@ -104,8 +103,8 @@ Aws3.prototype.keyAndExpiresParams = function() {
  */
 
 Aws3.prototype.regionExtension = function() {
-  if (this.awsregion !== 'us-east-1') {
-    return '-'+this.awsregion;
+  if (Aws3.awsRegion !== 'us-east-1') {
+    return '-'+Aws3.awsRegion;
   }
   return '';
 };

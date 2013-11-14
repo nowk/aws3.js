@@ -141,33 +141,16 @@ describe('Aws3', function() {
     });
   });
 
-  describe('alternate regions', function() {
+  describe('#subdomain', function() {
     it('defaults to the us-east-1 region', function() {
       var aws3 = new Aws3('large.txt', 'text/plain');
       assert.equal(aws3.subdomain(), 's3');
-
-      var aws32 = new Aws3('large.txt', 'text/plain');
-      aws32.awsregion = 'us-east-1';
-      assert.equal(aws32.subdomain(), 's3');
     });
 
-    it('can have the region set globally', function() {
+    it('uses the defined region', function() {
       Aws3.awsRegion = 'us-west-2';
       var aws3 = new Aws3('large.txt', 'text/plain');
       assert.equal(aws3.subdomain(), 's3-us-west-2');
-
-      var aws32 = new Aws3('large.txt', 'text/plain');
-      assert.equal(aws32.subdomain(), 's3-us-west-2');
-    });
-
-    it('can have the region set for each instance', function() {
-      var aws3 = new Aws3('large.txt', 'text/plain');
-      aws3.awsregion = 'us-west-2';
-      assert.equal(aws3.subdomain(), 's3-us-west-2');
-
-      var aws32 = new Aws3('large.txt', 'text/plain');
-      aws32.awsregion = 'us-west-3';
-      assert.equal(aws32.subdomain(), 's3-us-west-3');
     });
   });
 });
